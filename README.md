@@ -2,6 +2,10 @@
 
 A simple web-based Find and Replace tool with undo/redo functionality and theme toggle support (light/dark mode). This app allows users to enter text, search for specific words or phrases, replace them, and undo/redo changes. It also features a draggable and resizable text area for enhanced user experience.
 
+## Live Link
+
+https://text-finder-eight.vercel.app/
+
 ## Features
 
 - **Find and Replace**: Search for text and replace it across the document.
