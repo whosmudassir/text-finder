@@ -1,101 +1,114 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+import { FaSun, FaMoon, FaUndo, FaRedo } from "react-icons/fa";
+import { History } from "@/types";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [text, setText] = useState<string>("");
+  const [find, setFind] = useState<string>("");
+  const [replace, setReplace] = useState<string>("");
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // History stack for undo and redo
+  const [history, setHistory] = useState<History[]>([{ text: "" }]);
+  const [historyIndex, setHistoryIndex] = useState<number>(0);
+  // Toggle theme between dark and light mode
+  const toggleTheme = (): void => {
+    document.body.classList.toggle("dark", !isDarkMode);
+    setIsDarkMode(!isDarkMode);
+  };
+
+  // Handle text changes and manage the history
+  const handleTextChange = (newText: string): void => {
+    const newHistory = history.slice(0, historyIndex + 1);
+    setHistory([...newHistory, { text: newText }]);
+    setHistoryIndex(newHistory.length);
+    setText(newText);
+  };
+
+  // Replace function that replaces the 'find' string with 'replace' string
+  const handleReplace = (): void => {
+    if (find.trim()) {
+      const regex = new RegExp(find, "gi");
+      const updatedText = text.replace(regex, replace);
+      handleTextChange(updatedText);
+      setFind("");
+      setReplace("");
+    }
+  };
+
+  // Undo function
+  const undo = (): void => {
+    if (historyIndex > 0) {
+      setHistoryIndex(historyIndex - 1);
+      setText(history[historyIndex - 1].text);
+    }
+  };
+
+  // Redo function
+  const redo = (): void => {
+    if (historyIndex < history.length - 1) {
+      setHistoryIndex(historyIndex + 1);
+      setText(history[historyIndex + 1].text);
+    }
+  };
+
+  return (
+    <>
+      {/* Sticky Header with theme toggle */}
+      <div className="header">
+        <h1 className="title">Find and Replace Tool</h1>
+        <div onClick={toggleTheme} className="theme-toggle">
+          {isDarkMode ? <FaSun /> : <FaMoon />}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="main-content">
+        <div className="container">
+          <div className="inputContainer">
+            {/* Draggable and Resizable Textarea */}
+            <textarea
+              value={text}
+              onChange={(e) => handleTextChange(e.target.value)}
+              placeholder="Type or paste text here..."
+              rows={10}
+              className="textarea"
+              style={{
+                resize: "both",
+                overflow: "auto",
+              }}
+            />
+          </div>
+
+          <div className="controls">
+            <input
+              type="text"
+              value={find}
+              onChange={(e) => setFind(e.target.value)}
+              placeholder="Find text"
+            />
+            <input
+              type="text"
+              value={replace}
+              onChange={(e) => setReplace(e.target.value)}
+              placeholder="Replace with"
+            />
+            <button onClick={handleReplace}>Replace All</button>
+
+            {/* Undo/Redo icons */}
+            <button onClick={undo} disabled={historyIndex === 0}>
+              <FaUndo />
+            </button>
+            <button
+              onClick={redo}
+              disabled={historyIndex === history.length - 1}
+            >
+              <FaRedo />
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

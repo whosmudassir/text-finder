@@ -1,21 +1,170 @@
+/* Global Styles */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --light-bg: #ffffff;
+  --light-text: #000000;
+  --dark-bg: #121212;
+  --dark-text: #ffffff;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--light-bg);
+  color: var(--light-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Sticky Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: var(--light-bg);
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.3s;
+  padding-top: 20px;
+}
+
+body.dark .header {
+  background-color: var(--dark-bg);
+}
+
+.header .title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--light-text);
+}
+
+body.dark .header .title {
+  color: var(--dark-text);
+}
+
+.theme-toggle {
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--light-text);
+  transition: color 0.3s;
+  padding-bottom: 20px;
+}
+
+body.dark .theme-toggle {
+  color: var(--dark-text);
+}
+
+/* Main Content */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Textarea */
+.inputContainer {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  line-height: 1.5;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical; /* Make the textarea vertically resizable */
+  overflow: auto;
+  background: var(--light-bg);
+  color: var(--light-text);
+  caret-color: black;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark .textarea {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.controls input {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  flex: 1;
+  background-color: var(--light-bg);
+  color: var(--light-text);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark .controls input {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+.controls button {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #0070f3;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.controls button:hover {
+  background-color: #005bb5;
+}
+
+body.dark .controls button {
+  background-color: #0066cc;
+}
+
+body.dark .controls button:hover {
+  background-color: #004d99;
+}
+
+/* Disabled button styles */
+.controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Undo/Redo Icon Buttons */
+.controls button svg {
+  font-size: 18px; /* Adjust icon size */
 }
